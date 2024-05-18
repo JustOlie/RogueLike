@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
-public class Room : MonoBehaviour
+public class Room
 {
     public int X, Y;
     public int Width, Height;
