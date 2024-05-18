@@ -1,21 +1,15 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DungeonGenerator
+public class DungeonGenerator : MonoBehaviour
 {
     private int width, height;
     private int maxRoomSize, minRoomSize;
     private int maxRooms;
     private int maxEnemies;
     List<Room> rooms = new List<Room>();
-
-    private MapManager mapManager;
-
-    public DungeonGenerator(MapManager mapManager)
-    {
-        this.mapManager = mapManager;
-    }
 
     public void SetSize(int width, int height)
     {
@@ -38,18 +32,17 @@ public class DungeonGenerator
     {
         maxEnemies = max;
     }
-
     public void Generate()
     {
         rooms.Clear();
 
         for (int roomNum = 0; roomNum < maxRooms; roomNum++)
         {
-            int roomWidth = UnityEngine.Random.Range(minRoomSize, maxRoomSize);
-            int roomHeight = UnityEngine.Random.Range(minRoomSize, maxRoomSize);
+            int roomWidth = Random.Range(minRoomSize, maxRoomSize);
+            int roomHeight = Random.Range(minRoomSize, maxRoomSize);
 
-            int roomX = UnityEngine.Random.Range(0, width - roomWidth - 1);
-            int roomY = UnityEngine.Random.Range(0, height - roomHeight - 1);
+            int roomX = Random.Range(0, width - roomWidth - 1);
+            int roomY = Random.Range(0, height - roomHeight - 1);
 
             var room = new Room(roomX, roomY, roomWidth, roomHeight);
 
@@ -78,10 +71,11 @@ public class DungeonGenerator
                     {
                         SetFloorTile(new Vector3Int(x, y, 0));
                     }
+
                 }
             }
 
-            // create a corridor between rooms
+            // create a coridor between rooms
             if (rooms.Count != 0)
             {
                 TunnelBetween(rooms[rooms.Count - 1], room);
@@ -91,20 +85,20 @@ public class DungeonGenerator
 
             rooms.Add(room);
         }
-        var player = mapManager.CreateActor("Player", rooms[0].Center());
+        var player = MapManager.Get.CreateActor("Player", rooms[0].Center());
     }
 
     private bool TrySetWallTile(Vector3Int pos)
     {
         // if this is a floor, it should not be a wall
-        if (mapManager.FloorMap.GetTile(pos))
+        if (MapManager.Get.FloorMap.GetTile(pos))
         {
             return false;
         }
         else
         {
             // if not, it can be a wall
-            mapManager.ObstacleMap.SetTile(pos, mapManager.WallTile);
+            MapManager.Get.ObstacleMap.SetTile(pos, MapManager.Get.WallTile);
             return true;
         }
     }
@@ -112,12 +106,12 @@ public class DungeonGenerator
     private void SetFloorTile(Vector3Int pos)
     {
         // this tile should be walkable, so remove every obstacle
-        if (mapManager.ObstacleMap.GetTile(pos))
+        if (MapManager.Get.ObstacleMap.GetTile(pos))
         {
-            mapManager.ObstacleMap.SetTile(pos, null);
+            MapManager.Get.ObstacleMap.SetTile(pos, null);
         }
         // set the floor tile
-        mapManager.FloorMap.SetTile(pos, mapManager.FloorTile);
+        MapManager.Get.FloorMap.SetTile(pos, MapManager.Get.FloorTile);
     }
 
     private void TunnelBetween(Room oldRoom, Room newRoom)
@@ -126,7 +120,7 @@ public class DungeonGenerator
         Vector2Int newRoomCenter = newRoom.Center();
         Vector2Int tunnelCorner;
 
-        if (UnityEngine.Random.value < 0.5f)
+        if (Random.value < 0.5f)
         {
             // move horizontally, then vertically
             tunnelCorner = new Vector2Int(newRoomCenter.x, oldRoomCenter.y);
@@ -159,23 +153,25 @@ public class DungeonGenerator
             }
         }
     }
-
     private void PlaceEnemies(Room room, int maxEnemies)
     {
-        int num = UnityEngine.Random.Range(0, maxEnemies + 1);  // Gebruik UnityEngine.Random expliciet
-        Debug.Log("Placing " + num + " enemies in room at (" + room.X + ", " + room.Y + ")");
-
+        // the number of enemies we want 
+        int num = Random.Range(0, maxEnemies + 1);
         for (int counter = 0; counter < num; counter++)
         {
-            int x = UnityEngine.Random.Range(room.X + 1, room.X + room.Width - 1);
-            int y = UnityEngine.Random.Range(room.Y + 1, room.Y + room.Height - 1);
+            // The borders of the room are walls, so add and substract by 1 
+            int x = Random.Range(room.X + 1, room.X + room.Width - 1);
+            int y = Random.Range(room.Y + 1, room.Y + room.Height - 1);
 
-            Vector2 spawnPosition = new Vector2(x, y);
-            string enemyType = UnityEngine.Random.value < 0.5f ? "vampire" : "oneeye";
-
-            Debug.Log("Spawning " + enemyType + " at position " + spawnPosition);
-
-            mapManager.CreateActor(enemyType, spawnPosition);
+            // create different enemies 
+            if (Random.value < 0.5f)
+            {
+                GameManager.Get.CreateActor("oneeye", new Vector2(x, y));
+            }
+            else
+            {
+                GameManager.Get.CreateActor("vampire", new Vector2(x, y));
+            }
         }
     }
 }

@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class MapManager : MonoBehaviour
 {
     private static MapManager instance;
+
     private void Awake()
     {
         if (instance == null)
@@ -17,6 +19,7 @@ public class MapManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     public static MapManager Get { get => instance; }
 
     [Header("TileMaps")]
@@ -33,6 +36,7 @@ public class MapManager : MonoBehaviour
     public Dictionary<Vector2Int, Node> Nodes = new Dictionary<Vector2Int, Node>();
     public List<Vector3Int> VisibleTiles;
     public Dictionary<Vector3Int, TileData> Tiles;
+
 
     [Header("Map Settings")]
     public int width = 80;
@@ -52,7 +56,7 @@ public class MapManager : MonoBehaviour
         Tiles = new Dictionary<Vector3Int, TileData>();
         VisibleTiles = new List<Vector3Int>();
 
-        var generator = new DungeonGenerator(this);  // Pass the MapManager instance
+        var generator = new DungeonGenerator();
         generator.SetSize(width, height);
         generator.SetRoomSize(roomMinSize, roomMaxSize);
         generator.SetMaxRooms(maxRooms);
@@ -96,6 +100,7 @@ public class MapManager : MonoBehaviour
                 isExplored: false,
                 isVisible: false
             );
+
             Tiles.Add(pos, tile);
         }
     }
@@ -109,6 +114,7 @@ public class MapManager : MonoBehaviour
                 FogMap.SetTile(pos, FogTile);
                 FogMap.SetTileFlags(pos, TileFlags.None);
             }
+
             if (Tiles[pos].IsExplored)
             {
                 FogMap.SetColor(pos, new Color(1.0f, 1.0f, 1.0f, 0.5f));
@@ -128,6 +134,7 @@ public class MapManager : MonoBehaviour
             {
                 Tiles[pos].IsExplored = true;
             }
+
             Tiles[pos].IsVisible = false;
             FogMap.SetColor(pos, new Color(1.0f, 1.0f, 1.0f, 0.5f));
         }
