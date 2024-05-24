@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Actor), typeof(AStar))]
@@ -9,18 +6,18 @@ public class Enemy : MonoBehaviour
     public Actor Target { get; set; }
     public bool IsFighting { get; private set; } = false;
     private AStar algorithm;
-    // Start is called before the first frame update
+
     void Start()
     {
         algorithm = GetComponent<AStar>();
         GameManager.Get.AddEnemy(GetComponent<Actor>());
     }
 
-    // Update is called once per frame
     void Update()
     {
         RunAI();
     }
+
     public void MoveAlongPath(Vector3Int targetPosition)
     {
         Vector3Int gridPosition = MapManager.Get.FloorMap.WorldToCell(transform.position);
@@ -32,24 +29,34 @@ public class Enemy : MonoBehaviour
     {
         if (Target == null)
         {
-            // Check if GameManager.Get is not null and GameManager.Get.Player is not null
             if (GameManager.Get != null && GameManager.Get.Player != null)
             {
                 Target = GameManager.Get.Player;
             }
             else
             {
-                // Handle the case where the player is not found or GameManager.Get is null
-                return; // exit the method to avoid further execution
+                return;
             }
         }
 
-        Vector3Int gridPosition = MapManager.Get.FloorMap.WorldToCell(Target.transform.position);
+        Vector3Int targetGridPosition = MapManager.Get.FloorMap.WorldToCell(Target.transform.position);
+        Actor actor = GetComponent<Actor>();
 
-        if (IsFighting || GetComponent<Actor>().FieldOfView.Contains(gridPosition))
+        actor.UpdateFieldOfView(); // Update het gezichtsveld van de vijand
+
+        float distance = Vector3.Distance(transform.position, Target.transform.position);
+
+        if (IsFighting || actor.FieldOfView.Contains(targetGridPosition))
         {
-            IsFighting = true;
-            MoveAlongPath(gridPosition);
+            if (distance < 1.5f) // Als de afstand kleiner is dan 1.5
+            {
+                Action.Hit(actor, Target); // Voer de Hit functie uit
+                IsFighting = true;
+            }
+            else
+            {
+                MoveAlongPath(targetGridPosition); // Voer MoveAlongPath uit zoals voorheen
+            }
         }
     }
 }

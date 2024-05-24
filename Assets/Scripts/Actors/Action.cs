@@ -1,33 +1,65 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Action : MonoBehaviour
 {
-    static public void Move(Actor actor, Vector2 direction)
+    static public void MoveOrHit(Actor actor, Vector2 direction)
     {
-        // See if someone is at the target position
+        // Controleren of de richting waarin we bewegen bezet is
         Actor target = GameManager.Get.GetActorAtLocation(actor.transform.position + (Vector3)direction);
 
-        // If not, we can move
         if (target == null)
         {
-            actor.Move(direction);
-            actor.UpdateFieldOfView();
+            // Als het target null is, voer de Move functie uit
+            Move(actor, direction);
         }
-
-        // End turn in case this is the player
-        EndTurn(actor);
+        else
+        {
+            // Als er een target is, voer de Hit functie uit
+            Hit(actor, target);
+        }
     }
 
-    static private void EndTurn(Actor actor)
+    static public void Move(Actor actor, Vector2 direction)
     {
-        // Check if the actor has a Player component
-        Player playerComponent = actor.GetComponent<Player>();
-        if (playerComponent != null)
+        // Verplaats de actor in de opgegeven richting
+        actor.Move(direction);
+
+        // Update het gezichtsveld van de actor
+        actor.UpdateFieldOfView();
+    }
+
+    static public void Hit(Actor actor, Actor target)
+    {
+        // Bereken de damage
+        int damage = Mathf.Max(0, actor.Power - target.Defense);
+
+        // Verminder de hitpoints van het target als er schade is
+        if (damage > 0)
         {
-            // Execute the StartEnemyTurn function of the GameManager
-            GameManager.Get.StartEnemyTurn();
+            target.TakeDamage(damage);
+            // Voeg een bericht toe via UIManager
+            string message = $"{actor.name} hits {target.name} for {damage} damage!";
+            if (actor.GetComponent<Player>() != null)
+            {
+                UIManager.Instance.AddMessage(message, Color.white);
+            }
+            else
+            {
+                UIManager.Instance.AddMessage(message, Color.red);
+            }
+        }
+        else
+        {
+            // Voeg een bericht toe via UIManager dat er geen schade is
+            string message = $"{actor.name} attacks {target.name}, but does no damage.";
+            if (actor.GetComponent<Player>() != null)
+            {
+                UIManager.Instance.AddMessage(message, Color.white);
+            }
+            else
+            {
+                UIManager.Instance.AddMessage(message, Color.red);
+            }
         }
     }
 }
