@@ -1,50 +1,52 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.Emit;
-using UnityEngine; // Add this using directive
-using UnityEngine.UIElements; // Add this using directive
+using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Messages : MonoBehaviour
 {
     private Label[] labels = new Label[5];
     private VisualElement root;
-
     // Start is called before the first frame update
     void Start()
     {
-        root = GetComponent<UIDocument>().rootVisualElement;
-        labels[0] = root.Q<Label>("label1");
-        labels[1] = root.Q<Label>("label2");
-        labels[2] = root.Q<Label>("label3");
-        labels[3] = root.Q<Label>("label4");
-        labels[4] = root.Q<Label>("label5");
+        var uiDocument = GetComponent<UIDocument>();
+        root = uiDocument.rootVisualElement;
+
+        for (int i = 0; i < labels.Length; i++)
+        {
+            labels[i] = root.Q<Label>($"Label{i + 1}");
+        }
 
         Clear();
-
-        AddMessage("Welcome to the dungeon, Adventurer!", Color.magenta);
+        AddMessage("Welcome to the dungeon, Adventurer!", Color.green);
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
     public void Clear()
     {
         foreach (var label in labels)
         {
-            label.text = "";
+            label.text = string.Empty;
         }
     }
-
     public void MoveUp()
     {
-        for (int i = 3; i >= 0; i--)
+        for (int i = labels.Length - 1; i > 0; i--)
         {
-            labels[i + 1].text = labels[i].text;
-            labels[i + 1].style.color = labels[i].style.color;
+            labels[i].text = labels[i - 1].text;
+            labels[i].style.color = labels[i - 1].style.color;
         }
     }
-
     public void AddMessage(string content, Color color)
     {
         MoveUp();
         labels[0].text = content;
-        labels[0].style.color = color;
+        labels[0].style.color = new StyleColor(color);
     }
 }

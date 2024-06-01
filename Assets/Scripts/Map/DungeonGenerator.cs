@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
@@ -10,6 +7,7 @@ public class DungeonGenerator : MonoBehaviour
     private int maxRoomSize, minRoomSize;
     private int maxRooms;
     private int maxEnemies;
+    private int maxItems; // Nieuwe toevoeging
 
     List<Room> rooms = new List<Room>();
 
@@ -33,6 +31,11 @@ public class DungeonGenerator : MonoBehaviour
     public void SetMaxEnemies(int max)
     {
         maxEnemies = max;
+    }
+
+    public void SetMaxItems(int max) // Nieuwe toevoeging
+    {
+        maxItems = max;
     }
 
     public void Generate()
@@ -78,12 +81,13 @@ public class DungeonGenerator : MonoBehaviour
                 }
             }
 
-            // create a coridor between rooms
+            // create a corridor between rooms
             if (rooms.Count != 0)
             {
                 TunnelBetween(rooms[rooms.Count - 1], room);
             }
             PlaceEnemies(room, maxEnemies);
+            PlaceItems(room, maxItems); // Roep de functie PlaceItems aan nadat de vijanden zijn geplaatst
             rooms.Add(room);
         }
         var player = GameManager.Get.CreateGameObject("Player", rooms[0].Center());
@@ -162,7 +166,7 @@ public class DungeonGenerator : MonoBehaviour
 
         for (int counter = 0; counter < num; counter++)
         {
-            // The borders of the room are walls, so add and substract by 1
+            // The borders of the room are walls, so add and subtract by 1
             int x = UnityEngine.Random.Range(room.X + 1, room.X + room.Width - 1);
             int y = UnityEngine.Random.Range(room.Y + 1, room.Y + room.Height - 1);
 
@@ -175,6 +179,21 @@ public class DungeonGenerator : MonoBehaviour
             {
                 GameManager.Get.CreateGameObject("Snake", new Vector2(x, y));
             }
+        }
+    }
+
+    private void PlaceItems(Room room, int maxItems)
+    {
+        // the number of items we want
+        int num = UnityEngine.Random.Range(0, maxItems + 1);
+
+        for (int counter = 0; counter < num; counter++)
+        {
+            // The borders of the room are walls, so add and subtract by 1
+            int x = UnityEngine.Random.Range(room.X + 1, room.X + room.Width - 1);
+            int y = UnityEngine.Random.Range(room.Y + 1, room.Y + room.Height - 1);
+
+            GameManager.Get.CreateGameObject("Item", new Vector2(x, y)); // Assuming "Item" is the name of your item prefab
         }
     }
 }

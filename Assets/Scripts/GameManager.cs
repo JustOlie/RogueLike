@@ -4,8 +4,31 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    // Singleton instance
     private static GameManager instance;
 
+    // Lijst om de consumables bij te houden
+    private List<Consumable> consumables = new List<Consumable>();
+
+    // Singleton pattern
+    public static GameManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<GameManager>();
+                if (instance == null)
+                {
+                    GameObject gameManagerObject = new GameObject("GameManager");
+                    instance = gameManagerObject.AddComponent<GameManager>();
+                }
+            }
+            return instance;
+        }
+    }
+
+    // Awake is called when the script instance is being loaded
     private void Awake()
     {
         if (instance == null)
@@ -18,7 +41,33 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static GameManager Get { get => instance; }
+    // Functie om een item toe te voegen aan de lijst
+    public void AddItem(Consumable item)
+    {
+        consumables.Add(item);
+    }
+
+    // Functie om een item te verwijderen uit de lijst
+    public void RemoveItem(Consumable item)
+    {
+        consumables.Remove(item);
+    }
+
+    // Functie om het item te verkrijgen op een specifieke locatie
+    public Consumable GetItemAtLocation(Vector3 location)
+    {
+        // Itereer door de lijst om het item op de locatie te vinden
+        foreach (var item in consumables)
+        {
+            if (item.transform.position == location)
+            {
+                return item;
+            }
+        }
+        return null; // Als er geen item op die locatie is gevonden
+    }
+
+    // Vervolg van de GameManager-klasse zoals gegeven in het andere script
 
     public Actor Player;
     public List<Actor> Enemies = new List<Actor>();
