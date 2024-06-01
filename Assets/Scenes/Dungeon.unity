@@ -206,6 +206,7 @@ GameObject:
   m_Component:
   - component: {fileID: 515780078}
   - component: {fileID: 515780076}
+  - component: {fileID: 515780079}
   m_Layer: 0
   m_Name: UiManager
   m_TagString: Untagged
@@ -225,8 +226,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e27816f4b0034d343bde94953759daeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarObject: {fileID: 1155859142}
-  messagesObject: {fileID: 1341884708}
+  healthBar: {fileID: 1155859142}
+  messages: {fileID: 1341884708}
 --- !u!4 &515780078
 Transform:
   m_ObjectHideFlags: 0
@@ -244,6 +245,22 @@ Transform:
   - {fileID: 1341884710}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &515780079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 515780075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: 706023e5ac3a26847a829348d3ec097b, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 0}
+  m_SortingOrder: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,8 +410,8 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: 706023e5ac3a26847a829348d3ec097b, type: 2}
-  m_ParentUI: {fileID: 0}
+  m_PanelSettings: {fileID: 0}
+  m_ParentUI: {fileID: 515780079}
   sourceAsset: {fileID: 9197481963319205126, guid: 55500870477a40d4ca3d6f1fe710f13a, type: 3}
   m_SortingOrder: 0
 --- !u!1 &1341884708
@@ -454,8 +471,8 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: 706023e5ac3a26847a829348d3ec097b, type: 2}
-  m_ParentUI: {fileID: 0}
+  m_PanelSettings: {fileID: 0}
+  m_ParentUI: {fileID: 515780079}
   sourceAsset: {fileID: 9197481963319205126, guid: a34caaf2131930d4297f77929f43b75d, type: 3}
   m_SortingOrder: 0
 --- !u!1 &1410258481

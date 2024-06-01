@@ -118,8 +118,6 @@ public class MapManager : MonoBehaviour
             {
                 FogMap.SetColor(pos, Color.white);
             }
-
-            Debug.Log($"SetupFogMap - Position: {pos}, IsExplored: {Tiles[pos].IsExplored}");
         }
     }
 

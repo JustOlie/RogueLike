@@ -27,21 +27,14 @@ public class AStar : MonoBehaviour
             UpdateCurrentTile(ref currentNode);
             path = GeneratePath(currentNode, start, goal);
         }
+        Vector2 stepDirection = new Vector2(path.Peek().x - start.x, path.Peek().y - start.y);
 
-        if (path != null && path.Count > 0)
+        if (GameManager.Get.GetActorAtLocation(transform.position + (Vector3)stepDirection))
         {
-            Vector2Int nextTile = path.Pop();
-            Vector2 stepDirection = new Vector2(nextTile.x - start.x, nextTile.y - start.y);
-
-            if (GameManager.Get.GetActorAtLocation(start + (Vector2)stepDirection))
-            {
-                return Vector2.zero;
-            }
-
-            return stepDirection;
+            return Vector2.zero;
         }
 
-        return Vector2.zero;
+        return stepDirection;
     }
 
     /// <summary> Finds the neighbours of the current node </summary>
@@ -53,7 +46,7 @@ public class AStar : MonoBehaviour
         {
             for (int y = -1; y <= 1; y++)
             {
-                Vector2Int neighbourPos = new Vector2Int(parentPosition.x + x, parentPosition.y + y);
+                Vector2Int neighbourPos = new Vector2Int(parentPosition.x - x, parentPosition.y - y);
                 if (y != 0 || x != 0)
                 {
                     if (neighbourPos != start && MapManager.Get.FloorMap.GetTile((Vector3Int)neighbourPos))
@@ -171,6 +164,7 @@ public class AStar : MonoBehaviour
         }
         return null;
     }
+
     private Vector2 GetPath(Node currentNode)
     {
         Stack<Vector2> path = new Stack<Vector2>();
@@ -180,14 +174,6 @@ public class AStar : MonoBehaviour
             path.Push(currentNode.position);
             currentNode = currentNode.parent;
         }
-
-        if (path.Count > 0)
-        {
-            return path.Pop();
-        }
-        else
-        {
-            return Vector2.zero;
-        }
+        return path.Pop();
     }
 }

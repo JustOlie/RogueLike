@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,6 +6,7 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour, Controls.IPlayerActions
 {
     private Controls controls;
+
 
     private void Awake()
     {
@@ -48,8 +50,5 @@ public class Player : MonoBehaviour, Controls.IPlayerActions
         Vector2 roundedDirection = new Vector2(Mathf.Round(direction.x), Mathf.Round(direction.y));
         Action.MoveOrHit(GetComponent<Actor>(), roundedDirection);
         Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -5);
-
-        // Update fog of war na beweging van de speler
-        MapManager.Get.UpdateFogMap(GameManager.Get.Player.FieldOfView);
     }
 }

@@ -1,37 +1,45 @@
-using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
 public class Actor : MonoBehaviour
 {
+    private AdamMilVisibility algorithm;
+
+    [Header("FieldOfView")]
+    public List<Vector3Int> FieldOfView = new List<Vector3Int>();
+    public int FieldOfViewRange = 8;
+
     [Header("Powers")]
     [SerializeField] private int maxHitPoints;
     [SerializeField] private int hitPoints;
     [SerializeField] private int defense;
     [SerializeField] private int power;
 
-    public int MaxHitPoints { get { return maxHitPoints; } }
-    public int HitPoints { get { return hitPoints; } }
-    public int Defense { get { return defense; } }
-    public int Power { get { return power; } }
+    public int MaxHitPoints { get => maxHitPoints; }
+    public int HitPoints { get => hitPoints; }
+    public int Defense { get => defense; }
+    public int Power { get => power; }
 
-    public List<Vector3Int> FieldOfView { get; private set; }
-
-    private void Awake()
-    {
-        FieldOfView = new List<Vector3Int>(); // Placeholder voor zichtbare cellen
-    }
 
     private void Start()
     {
-        if (GetComponent<Player>() != null)
+        algorithm = new AdamMilVisibility();
+        UpdateFieldOfView();
+
+        if (GetComponent<Player>())
         {
-            UIManager.Instance.UpdateHealth(hitPoints, maxHitPoints);
+            UIManager.Get.UpdateHealth(HitPoints, MaxHitPoints);
         }
     }
 
-    public void Move(Vector2 direction)
+    public void Move(Vector3 direction)
     {
-        transform.position += (Vector3)direction;
+        if (MapManager.Get.IsWalkable(transform.position + direction))
+        {
+            transform.position += direction;
+        }
     }
 
     public void UpdateFieldOfView()
@@ -47,61 +55,32 @@ public class Actor : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    public void DoDamage(int hp)
     {
-        hitPoints -= damage;
-        if (hitPoints < 0)
+        hitPoints -= hp;
+
+        if (hitPoints < 0) hitPoints = 0;
+
+        if (GetComponent<Player>())
         {
-            hitPoints = 0;
+            UIManager.Get.UpdateHealth(hitPoints, MaxHitPoints);
         }
 
-        if (GetComponent<Player>() != null)
-        {
-            UIManager.Instance.UpdateHealth(hitPoints, maxHitPoints);
-        }
-
-        if (hitPoints <= 0)
-        {
-            Die();
-        }
+        if (hitPoints == 0) Die();
     }
 
     private void Die()
     {
-        if (GetComponent<Player>() != null)
+        if (GetComponent<Player>())
         {
-            UIManager.Instance.AddMessage("You died!", Color.red);
+            UIManager.Get.AddMessage("You died!", Color.red); //Red
         }
         else
         {
-            string message = $"{gameObject.name} is dead!";
-            UIManager.Instance.AddMessage(message, Color.green);
-            GameManager.Get.CreateActor("Dead", transform.position);
-            if (GetComponent<Enemy>() != null)
-            {
-                GameManager.Get.RemoveEnemy(this);
-            }
+            UIManager.Get.AddMessage($"{name} is dead!", Color.green); //Light Orange
         }
-
+        GameManager.Get.CreateGameObject("Dead", transform.position).name = $"Remains of {name}";
+        GameManager.Get.RemoveEnemy(this);
         Destroy(gameObject);
-    }
-
-    public void DoDamage(int hp)
-    {
-        hitPoints -= hp;
-        if (hitPoints < 0)
-        {
-            hitPoints = 0;
-        }
-
-        if (GetComponent<Player>() != null)
-        {
-            UIManager.Instance.UpdateHealth(hitPoints, maxHitPoints);
-        }
-
-        if (hitPoints == 0)
-        {
-            Die();
-        }
     }
 }

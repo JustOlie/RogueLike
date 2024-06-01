@@ -1,63 +1,50 @@
-using UnityEngine;
-using UnityEngine.UIElements;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+using UnityEngine; // Add this using directive
+using UnityEngine.UIElements; // Add this using directive
 
 public class Messages : MonoBehaviour
 {
     private Label[] labels = new Label[5];
     private VisualElement root;
 
+    // Start is called before the first frame update
     void Start()
     {
         root = GetComponent<UIDocument>().rootVisualElement;
-
-        for (int i = 0; i < labels.Length; i++)
-        {
-            labels[i] = root.Q<Label>("label" + (i + 1));
-            if (labels[i] == null)
-            {
-                Debug.LogError("Label not found: label" + (i + 1));
-            }
-        }
+        labels[0] = root.Q<Label>("label1");
+        labels[1] = root.Q<Label>("label2");
+        labels[2] = root.Q<Label>("label3");
+        labels[3] = root.Q<Label>("label4");
+        labels[4] = root.Q<Label>("label5");
 
         Clear();
 
-        AddMessage("Welcome to the dungeon, Adventurer!", Color.green);
+        AddMessage("Welcome to the dungeon, Adventurer!", Color.magenta);
     }
 
     public void Clear()
     {
-        for (int i = 0; i < labels.Length; i++)
+        foreach (var label in labels)
         {
-            if (labels[i] != null)
-            {
-                labels[i].text = "";
-            }
+            label.text = "";
         }
     }
 
     public void MoveUp()
     {
-        for (int i = labels.Length - 1; i > 0; i--)
+        for (int i = 3; i >= 0; i--)
         {
-            if (labels[i] != null && labels[i - 1] != null)
-            {
-                labels[i].text = labels[i - 1].text;
-                labels[i].style.color = labels[i - 1].style.color;
-            }
-        }
-        if (labels[0] != null)
-        {
-            labels[0].text = "";
+            labels[i + 1].text = labels[i].text;
+            labels[i + 1].style.color = labels[i].style.color;
         }
     }
 
     public void AddMessage(string content, Color color)
     {
         MoveUp();
-        if (labels[0] != null)
-        {
-            labels[0].text = content;
-            labels[0].style.color = new StyleColor(color);
-        }
+        labels[0].text = content;
+        labels[0].style.color = color;
     }
 }
