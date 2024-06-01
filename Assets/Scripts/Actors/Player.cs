@@ -1,22 +1,22 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Actor))]
+[RequireComponent(typeof(Actor), typeof(PlayerInventory))]
 public class Player : MonoBehaviour, Controls.IPlayerActions
 {
     private Controls controls;
-
+    private PlayerInventory inventory;
 
     private void Awake()
     {
         controls = new Controls();
+        inventory = GetComponent<PlayerInventory>();
     }
 
     private void Start()
     {
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -5);
-        GameManager.Get.Player = GetComponent<Actor>();
+        // Add a sample health potion to the player's inventory for testing
+        inventory.AddItem(new HealthPotion());
     }
 
     private void OnEnable()
@@ -33,22 +33,78 @@ public class Player : MonoBehaviour, Controls.IPlayerActions
 
     public void OnMovement(InputAction.CallbackContext context)
     {
+        // Handle movement input
+    }
+
+    public void OnSelect(InputAction.CallbackContext context)
+    {
+        // Handle item selection input
+    }
+
+    public void OnUse(InputAction.CallbackContext context)
+    {
         if (context.performed)
         {
-            Move();
+            // Get the selected item from the inventory
+            Consumable selectedItem = inventory.Selected;
+
+            if (selectedItem != null)
+            {
+                // Check the type of the selected item and perform the appropriate action
+                if (selectedItem is HealthPotion)
+                {
+                    // Heal the player
+                    HealPlayer((HealthPotion)selectedItem);
+                }
+                else if (selectedItem is Fireball)
+                {
+                    // Use fireball to deal damage to nearby enemies
+                    UseFireball((Fireball)selectedItem);
+                }
+                else if (selectedItem is ScrollOfConfusion)
+                {
+                    // Use scroll of confusion to confuse nearby enemies
+                    UseScrollOfConfusion((ScrollOfConfusion)selectedItem);
+                }
+
+                // Remove the used item from the inventory
+                inventory.RemoveItem(selectedItem);
+            }
         }
     }
 
-    public void OnExit(InputAction.CallbackContext context)
+    private void HealPlayer(HealthPotion potion)
     {
-
+        // Heal the player using the Heal method of the Actor component
+        GetComponent<Actor>().Heal(potion.HealAmount);
+        UIManager.Get.AddMessage("You were healed by a health potion.", Color.green);
     }
 
-    private void Move()
+    private void UseFireball(Fireball fireball)
     {
-        Vector2 direction = controls.Player.Movement.ReadValue<Vector2>();
-        Vector2 roundedDirection = new Vector2(Mathf.Round(direction.x), Mathf.Round(direction.y));
-        Action.MoveOrHit(GetComponent<Actor>(), roundedDirection);
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -5);
+        // Get nearby enemies using GameManager's GetNearbyEnemies function
+        var nearbyEnemies = GameManager.Instance.GetNearbyEnemies(transform.position);
+
+        // Deal damage to all nearby enemies
+        foreach (var enemy in nearbyEnemies)
+        {
+            enemy.DoDamage(fireball.Damage);
+        }
+
+        UIManager.Get.AddMessage($"You used a fireball and dealt {fireball.Damage} damage to nearby enemies!", Color.red);
+    }
+
+    private void UseScrollOfConfusion(ScrollOfConfusion scroll)
+    {
+        // Get nearby enemies using GameManager's GetNearbyEnemies function
+        var nearbyEnemies = GameManager.Instance.GetNearbyEnemies(transform.position);
+
+        // Confuse all nearby enemies
+        foreach (var enemy in nearbyEnemies)
+        {
+            enemy.GetComponent<Enemy>().Confuse();
+        }
+
+        UIManager.Get.AddMessage($"You used a scroll of confusion and confused nearby enemies!", Color.blue);
     }
 }

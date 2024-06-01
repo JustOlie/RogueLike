@@ -8,9 +8,11 @@ public class UIManager : MonoBehaviour
     [Header("Documents")]
     public GameObject healthBarObject;
     public GameObject messagesObject;
+    public GameObject inventoryObject; // Voeg een GameObject voor de inventaris toe
 
     private HealthBar healthBar;
     private Messages messages;
+    private InventoryUI inventoryUI; // Voeg een InventoryUI toe
 
     private void Awake()
     {
@@ -34,6 +36,10 @@ public class UIManager : MonoBehaviour
         if (messagesObject != null)
         {
             messages = messagesObject.GetComponent<Messages>();
+        }
+        if (inventoryObject != null)
+        {
+            inventoryUI = inventoryObject.GetComponent<InventoryUI>(); // Verkrijg de InventoryUI-component
         }
     }
 
@@ -63,5 +69,11 @@ public class UIManager : MonoBehaviour
         {
             messages.AddMessage(message, color);
         }
+    }
+
+    // Voeg een methode toe om toegang te krijgen tot het InventoryUI-component
+    public InventoryUI GetInventoryUI()
+    {
+        return inventoryUI;
     }
 }

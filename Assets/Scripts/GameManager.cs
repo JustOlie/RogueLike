@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -65,6 +64,22 @@ public class GameManager : MonoBehaviour
             }
         }
         return null; // Als er geen item op die locatie is gevonden
+    }
+
+    // Nieuwe methode om nabije vijanden op te halen
+    public List<Actor> GetNearbyEnemies(Vector3 location)
+    {
+        List<Actor> nearbyEnemies = new List<Actor>();
+
+        foreach (var enemy in Enemies)
+        {
+            if (Vector3.Distance(enemy.transform.position, location) < 5f)
+            {
+                nearbyEnemies.Add(enemy);
+            }
+        }
+
+        return nearbyEnemies;
     }
 
     // Vervolg van de GameManager-klasse zoals gegeven in het andere script

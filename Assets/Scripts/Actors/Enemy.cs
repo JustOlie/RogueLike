@@ -6,6 +6,8 @@ public class Enemy : MonoBehaviour
 {
     public Actor Target;
     public bool IsFighting = false;
+    public int confused = 0; // Nieuwe variabele confused toegevoegd
+
     private AStar algorithm;
 
     private void Start()
@@ -23,6 +25,14 @@ public class Enemy : MonoBehaviour
 
     public void RunAI()
     {
+        // If confused, reduce confused and show message
+        if (confused > 0)
+        {
+            confused--;
+            UIManager.Get.AddMessage($"The {name} is confused and cannot act.", Color.blue);
+            return;
+        }
+
         // If target is null, set target to player (from gameManager)
         if (Target == null)
         {
@@ -56,5 +66,10 @@ public class Enemy : MonoBehaviour
                 MoveAlongPath(gridPosition);
             }
         }
+    }
+
+    public void Confuse() // Nieuwe Confuse methode toegevoegd
+    {
+        confused = 8;
     }
 }

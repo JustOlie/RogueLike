@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class Actor : MonoBehaviour
@@ -67,6 +65,18 @@ public class Actor : MonoBehaviour
         }
 
         if (hitPoints == 0) Die();
+    }
+
+    public void Heal(int hp)
+    {
+        int actualHealing = Mathf.Min(maxHitPoints - hitPoints, hp);
+        hitPoints += actualHealing;
+
+        if (GetComponent<Player>())
+        {
+            UIManager.Get.UpdateHealth(hitPoints, MaxHitPoints);
+            UIManager.Get.AddMessage($"You were healed for {actualHealing} hit points!", Color.green);
+        }
     }
 
     private void Die()
