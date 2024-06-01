@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
@@ -56,7 +54,7 @@ public class GameManager : MonoBehaviour
 
     public void StartEnemyTurn()
     {
-        foreach (var enemy in GameManager.Get.Enemies)
+        foreach (var enemy in Enemies)
         {
             Enemy enemyComponent = enemy.GetComponent<Enemy>();
             if (enemyComponent != null)
@@ -68,19 +66,16 @@ public class GameManager : MonoBehaviour
 
     public GameObject CreateActor(string name, Vector2 position)
     {
+        Debug.Log($"Creating actor: {name}");
         GameObject actor = Instantiate(Resources.Load<GameObject>($"Prefabs/{name}"), new Vector3(position.x + 0.5f, position.y + 0.5f, 0), Quaternion.identity);
-
-        if (name == "Player")
-        {
-            Player = actor.GetComponent<Actor>();
-        }
-        else
-        {
-            AddEnemy(actor.GetComponent<Actor>());
-        }
 
         actor.name = name;
         return actor;
+    }
+
+    public void OnPlayerStep()
+    {
+        StartEnemyTurn();
     }
 
     private void Start()

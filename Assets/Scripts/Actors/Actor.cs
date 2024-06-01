@@ -36,10 +36,15 @@ public class Actor : MonoBehaviour
 
     public void UpdateFieldOfView()
     {
-        // Placeholder logica voor het bijwerken van het gezichtsveld
+        var pos = MapManager.Get.FloorMap.WorldToCell(transform.position);
+
         FieldOfView.Clear();
-        FieldOfView.Add(Vector3Int.FloorToInt(transform.position)); // Voeg huidige positie toe aan gezichtsveld
-        Debug.Log($"{gameObject.name} updates field of view.");
+        algorithm.Compute(pos, FieldOfViewRange, FieldOfView);
+
+        if (GetComponent<Player>())
+        {
+            MapManager.Get.UpdateFogMap(FieldOfView);
+        }
     }
 
     public void TakeDamage(int damage)
@@ -71,7 +76,7 @@ public class Actor : MonoBehaviour
         {
             string message = $"{gameObject.name} is dead!";
             UIManager.Instance.AddMessage(message, Color.green);
-            GameManager.Get.CreateActor("Gravestone", transform.position);
+            GameManager.Get.CreateActor("Dead", transform.position);
             if (GetComponent<Enemy>() != null)
             {
                 GameManager.Get.RemoveEnemy(this);

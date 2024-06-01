@@ -13,10 +13,10 @@ public class HealthBar : MonoBehaviour
         root = uiDocument.rootVisualElement;
 
         healthBar = root.Q<VisualElement>("HealthBar");
-        healthLabel = root.Q<Label>("HealthBar");
+        healthLabel = root.Q<Label>("HealthLabel");
     }
 
-    public void UpdateHealth(int currentHitPoints, int maxHitPoints)
+    public void SetValues(int currentHitPoints, int maxHitPoints)
     {
         float percent = (float)currentHitPoints / maxHitPoints * 100;
         healthBar.style.width = new Length(percent, LengthUnit.Percent);

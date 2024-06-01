@@ -44,3 +44,9 @@ TagManager:
   - name: Fog
     uniqueID: 809930453
     locked: 0
+  - name: Floor
+    uniqueID: 3685356359
+    locked: 0
+  - name: Actors
+    uniqueID: 1322192335
+    locked: 0

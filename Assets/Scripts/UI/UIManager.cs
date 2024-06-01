@@ -1,57 +1,66 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 
-[RequireComponent(typeof(UIDocument))]
 public class UIManager : MonoBehaviour
 {
-    public static UIManager Instance { get; private set; }
+    private static UIManager instance;
 
     [Header("Documents")]
-    public GameObject healthBar;
-    public GameObject messages;
+    public GameObject healthBarObject;
+    public GameObject messagesObject;
 
-    private HealthBar healthBarScript;
-    private Messages messagesScript;
+    private HealthBar healthBar;
+    private Messages messages;
 
-    void Awake()
+    private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (instance == null)
         {
-            Destroy(this.gameObject);
+            instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            Destroy(gameObject);
         }
     }
 
-    void Start()
+    private void Start()
     {
-        if (healthBar != null)
+        if (healthBarObject != null)
         {
-            healthBarScript = healthBar.GetComponent<HealthBar>();
+            healthBar = healthBarObject.GetComponent<HealthBar>();
         }
-
-        if (messages != null)
+        if (messagesObject != null)
         {
-            messagesScript = messages.GetComponent<Messages>();
+            messages = messagesObject.GetComponent<Messages>();
+        }
+    }
+
+    public static UIManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                Debug.LogError("UIManager is not initialized!");
+            }
+            return instance;
         }
     }
 
     public void UpdateHealth(int current, int max)
     {
-        if (healthBarScript != null)
+        if (healthBar != null)
         {
-            healthBarScript.UpdateHealth(current, max);
+            healthBar.SetValues(current, max);
         }
     }
 
     public void AddMessage(string message, Color color)
     {
-        if (messagesScript != null)
+        if (messages != null)
         {
-            messagesScript.AddMessage(message, color);
+            messages.AddMessage(message, color);
         }
     }
 }

@@ -85,7 +85,7 @@ public class DungeonGenerator : MonoBehaviour
 
             rooms.Add(room);
         }
-        var player = MapManager.Get.CreateActor("Player", rooms[0].Center());
+        var player = GameManager.Get.CreateActor("Player", rooms[0].Center());
     }
 
     private bool TrySetWallTile(Vector3Int pos)

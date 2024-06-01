@@ -1,21 +1,17 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Actor), typeof(AStar))]
 public class Enemy : MonoBehaviour
 {
-    public Actor Target { get; set; }
-    public bool IsFighting { get; private set; } = false;
+    public Actor Target;
+    public bool IsFighting = false;
     private AStar algorithm;
 
-    void Start()
+    private void Start()
     {
-        algorithm = GetComponent<AStar>();
         GameManager.Get.AddEnemy(GetComponent<Actor>());
-    }
-
-    void Update()
-    {
-        RunAI();
+        algorithm = GetComponent<AStar>();
     }
 
     public void MoveAlongPath(Vector3Int targetPosition)
@@ -27,36 +23,28 @@ public class Enemy : MonoBehaviour
 
     public void RunAI()
     {
+        // TODO: If target is null, set target to player (from gameManager)
         if (Target == null)
         {
-            if (GameManager.Get != null && GameManager.Get.Player != null)
-            {
-                Target = GameManager.Get.Player;
-            }
-            else
-            {
-                return;
-            }
+            Target = GameManager.Get.Player;
         }
 
-        Vector3Int targetGridPosition = MapManager.Get.FloorMap.WorldToCell(Target.transform.position);
-        Actor actor = GetComponent<Actor>();
+        // TODO: convert the position of the target to a gridPosition
+        var gridPosition = MapManager.Get.FloorMap.WorldToCell(Target.transform.position);
 
-        actor.UpdateFieldOfView(); // Update het gezichtsveld van de vijand
-
-        float distance = Vector3.Distance(transform.position, Target.transform.position);
-
-        if (IsFighting || actor.FieldOfView.Contains(targetGridPosition))
+        // First check if already fighting, because the FieldOfView check costs more cpu
+        if (IsFighting || GetComponent<Actor>().FieldOfView.Contains(gridPosition))
         {
-            if (distance < 1.5f) // Als de afstand kleiner is dan 1.5
+            // TODO: If the enemy was not fighting, is should be fighting now
+            if (!IsFighting)
             {
-                Action.Hit(actor, Target); // Voer de Hit functie uit
                 IsFighting = true;
             }
-            else
-            {
-                MoveAlongPath(targetGridPosition); // Voer MoveAlongPath uit zoals voorheen
-            }
+
+            // TODO: call MoveAlongPath with the gridPosition
+            MoveAlongPath(gridPosition);
+
         }
+
     }
 }
