@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1603972585400334252}
   - component: {fileID: 5405338452128763362}
+  - component: {fileID: -651799023596145113}
   m_Layer: 0
-  m_Name: healthpotion
+  m_Name: HealthPotion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,3 +85,16 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-651799023596145113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4174979598022856306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de620048d2143c4ab2a2ffc23a9423f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0

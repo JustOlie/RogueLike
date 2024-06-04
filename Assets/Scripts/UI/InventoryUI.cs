@@ -1,60 +1,41 @@
+using System.Collections;
 using System.Collections.Generic;
-using System.Reflection.Emit.Label;
 using UnityEngine.UIElements;
+using UnityEngine;
+using System.Linq;
 
 public class InventoryUI : MonoBehaviour
 {
     public Label[] labels = new Label[8];
     public VisualElement root;
-    private int selected = 0;
-    private int numItems = 0;
+    public int selected;
+    public int numItems;
 
-    public int Selected => selected;
+    public int Selected { get => selected; }
 
-    private void Clear()
+    // Start is called before the first frame update
+    void Start()
     {
-        foreach (var label in labels)
-        {
-            label.text = "";
-        }
-    }
-
-    private void Start()
-    {
-        for (int i = 0; i < labels.Length; i++)
-        {
-            labels[i] = root.Q<Label>("Item" + (i + 1));
-        }
+        root = GetComponent<UIDocument>().rootVisualElement;
+        labels[0] = root.Q<Label>("Item1");
+        labels[1] = root.Q<Label>("Item2");
+        labels[2] = root.Q<Label>("Item3");
+        labels[3] = root.Q<Label>("Item4");
+        labels[4] = root.Q<Label>("Item5");
+        labels[5] = root.Q<Label>("Item6");
+        labels[6] = root.Q<Label>("Item7");
+        labels[7] = root.Q<Label>("Item8");
 
         Clear();
         root.style.display = DisplayStyle.None;
     }
 
-    private void UpdateSelected()
+    public void Clear()
     {
         for (int i = 0; i < labels.Length; i++)
         {
-            if (i == selected)
-            {
-                labels[i].style.backgroundColor = new Color(0.0f, 1.0f, 0.0f); // Groene achtergrond
-            }
-            else
-            {
-                labels[i].style.backgroundColor = Color.clear; // Transparante achtergrond
-            }
+            labels[i].text = "";
         }
-    }
-
-    public void SelectNextItem()
-    {
-        selected = Mathf.Min(selected + 1, numItems - 1);
-        UpdateSelected();
-    }
-
-    public void SelectPreviousItem()
-    {
-        selected = Mathf.Max(selected - 1, 0);
-        UpdateSelected();
     }
 
     public void Show(List<Consumable> list)
@@ -63,12 +44,12 @@ public class InventoryUI : MonoBehaviour
         numItems = list.Count;
         Clear();
 
-        for (int i = 0; i < Mathf.Min(numItems, labels.Length); i++)
+        for (int i = 0; i < list.Count; i++)
         {
             labels[i].text = list[i].name;
         }
-
         UpdateSelected();
+
         root.style.display = DisplayStyle.Flex;
     }
 
@@ -76,4 +57,38 @@ public class InventoryUI : MonoBehaviour
     {
         root.style.display = DisplayStyle.None;
     }
+
+    public void SelectNextItem()
+    {
+        if (selected < numItems - 1)
+        {
+            selected++;
+            UpdateSelected();
+        }
+    }
+
+    public void SelectPreviousItem()
+    {
+        if (selected > 0)
+        {
+            selected--;
+            UpdateSelected();
+        }
+    }
+
+    private void UpdateSelected()
+    {
+        for (int i = 0; i < labels.Length; i++)
+        {
+            if (i == selected)
+            {
+                labels[i].style.backgroundColor = Color.green;
+            }
+            else
+            {
+                labels[i].style.backgroundColor = Color.clear;
+            }
+        }
+    }
+
 }

@@ -22,7 +22,6 @@ public class Action : MonoBehaviour
         // end turn in case this is the player
         EndTurn(actor);
     }
-
     static public void Move(Actor actor, Vector2 direction)
     {
         actor.Move(direction);
@@ -37,12 +36,12 @@ public class Action : MonoBehaviour
 
         if (damage > 0)
         {
-            UIManager.Instance.AddMessage($"{description} for {damage} hit points.", color);
+            UIManager.Get.AddMessage($"{description} for {damage} hit points.", color);
             target.DoDamage(damage);
         }
         else
         {
-            UIManager.Instance.AddMessage($"{description} but does no damage.", color);
+            UIManager.Get.AddMessage($"{description} but does no damage.", color);
         }
     }
 
@@ -53,4 +52,5 @@ public class Action : MonoBehaviour
             GameManager.Get.StartEnemyTurn();
         }
     }
+
 }

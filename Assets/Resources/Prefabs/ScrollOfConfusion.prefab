@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 9066621173195864238}
   - component: {fileID: 9109156399060320949}
+  - component: {fileID: -6225942742489956642}
   m_Layer: 0
-  m_Name: scroll_of_confusion
+  m_Name: ScrollOfConfusion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,3 +85,16 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-6225942742489956642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8642856154979673805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de620048d2143c4ab2a2ffc23a9423f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
