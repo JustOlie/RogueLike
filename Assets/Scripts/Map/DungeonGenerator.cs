@@ -73,7 +73,7 @@ public class DungeonGenerator : MonoBehaviour
                 {
                     if (x == roomX || x == roomX + roomWidth - 1 || y == roomY || y == roomY + roomHeight - 1)
                     {
-                        if (!TrySetWallTile(new Vector3Int(x, y)))
+                        if (!TrySetWallTile(new Vector3Int(x, y, 0)))
                         {
                             continue;
                         }
@@ -96,22 +96,54 @@ public class DungeonGenerator : MonoBehaviour
         }
 
         // Nieuwe logica voor ladders en speler
-        if (currentFloor > 0)
+        if (currentFloor == 1)
         {
-            GameManager.Get.CreateGameObject("LadderUp", rooms[0].Center()).GetComponent<Ladder>().Up = true;
+            // Alleen een ladder omhoog in de laatste kamer
+            GameManager.Get.CreateGameObject("LadderUp", rooms[rooms.Count - 1].Center()).GetComponent<Ladder>().Up = true;
+        }
+        else if (currentFloor > 1)
+        {
+            // Ladder omlaag in de eerste kamer
+            GameManager.Get.CreateGameObject("LadderDown", rooms[0].Center()).GetComponent<Ladder>().Up = false;
+
+            // Ladder omhoog in de laatste kamer
+            GameManager.Get.CreateGameObject("LadderUp", rooms[rooms.Count - 1].Center()).GetComponent<Ladder>().Up = true;
         }
 
-        GameManager.Get.CreateGameObject("LadderDown", rooms[rooms.Count - 1].Center()).GetComponent<Ladder>().Up = false;
+        Vector3 playerPosition = new Vector3(rooms[0].Center().x, rooms[0].Center().y, 0);
+        playerPosition = SnapToGrid(playerPosition);
 
         if (GameManager.Get.Player != null)
         {
-            GameManager.Get.Player.transform.position = new Vector3(rooms[0].Center().x, rooms[0].Center().y, 0);
+            GameManager.Get.Player.transform.position = playerPosition;
         }
         else
         {
-            GameManager.Get.CreateGameObject("Player", rooms[0].Center());
+            GameManager.Get.CreateGameObject("Player", playerPosition);
         }
+
+        // Update de fog of war na het plaatsen van de speler
+        List<Vector3Int> playerFOV = ComputePlayerFOV(playerPosition);
+        MapManager.Get.UpdateFogMap(playerFOV);
     }
+
+    private Vector3 SnapToGrid(Vector3 position)
+    {
+        return new Vector3(Mathf.Round(position.x), Mathf.Round(position.y), position.z);
+    }
+
+    private List<Vector3Int> ComputePlayerFOV(Vector3 playerPosition)
+    {
+        // Implementeer een methode om de zichtbare tegels rondom de speler te berekenen
+        // Dit is een placeholder, vervang het met de daadwerkelijke logica
+        List<Vector3Int> fov = new List<Vector3Int>();
+
+        // Voeg hier de logica toe om de zichtbare tegels rondom de speler te berekenen
+
+        return fov;
+    }
+
+
 
     private bool TrySetWallTile(Vector3Int pos)
     {
