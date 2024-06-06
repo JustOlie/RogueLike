@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2526611353225535184}
   - component: {fileID: 4446393736399928247}
   m_Layer: 0
-  m_Name: vampire
+  m_Name: Vampire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

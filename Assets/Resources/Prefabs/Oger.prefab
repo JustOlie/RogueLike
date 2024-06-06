@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2112954685120019155}
   - component: {fileID: 3709224031807631657}
   m_Layer: 0
-  m_Name: oneeye
+  m_Name: Oger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

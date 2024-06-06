@@ -14,6 +14,12 @@ public class DungeonGenerator : MonoBehaviour
 
     List<Room> rooms = new List<Room>();
 
+    private List<string> enemyNames = new List<string>
+    {
+        "Snake", "Skeleton", "Scorpion", "Piglin", "Knight",
+        "Vampire", "Spirit", "Wizard", "Ogre", "Dragon"
+    };
+
     public void SetSize(int width, int height)
     {
         this.width = width;
@@ -73,7 +79,7 @@ public class DungeonGenerator : MonoBehaviour
                 {
                     if (x == roomX || x == roomX + roomWidth - 1 || y == roomY || y == roomY + roomHeight - 1)
                     {
-                        if (!TrySetWallTile(new Vector3Int(x, y, 0)))
+                        if (!TrySetWallTile(new Vector3Int(x, y)))
                         {
                             continue;
                         }
@@ -110,39 +116,15 @@ public class DungeonGenerator : MonoBehaviour
             GameManager.Get.CreateGameObject("LadderUp", rooms[rooms.Count - 1].Center()).GetComponent<Ladder>().Up = true;
         }
 
-        Vector3 playerPosition = new Vector3(rooms[0].Center().x, rooms[0].Center().y, 0);
-        playerPosition = SnapToGrid(playerPosition);
-
         if (GameManager.Get.Player != null)
         {
-            GameManager.Get.Player.transform.position = playerPosition;
+            GameManager.Get.Player.transform.position = new Vector3(rooms[0].Center().x, rooms[0].Center().y, 0);
         }
         else
         {
-            GameManager.Get.CreateGameObject("Player", playerPosition);
+            GameManager.Get.CreateGameObject("Player", rooms[0].Center());
         }
-
-        // Update de fog of war na het plaatsen van de speler
-        List<Vector3Int> playerFOV = ComputePlayerFOV(playerPosition);
-        MapManager.Get.UpdateFogMap(playerFOV);
     }
-
-    private Vector3 SnapToGrid(Vector3 position)
-    {
-        return new Vector3(Mathf.Round(position.x), Mathf.Round(position.y), position.z);
-    }
-
-    private List<Vector3Int> ComputePlayerFOV(Vector3 playerPosition)
-    {
-        // Implementeer een methode om de zichtbare tegels rondom de speler te berekenen
-        // Dit is een placeholder, vervang het met de daadwerkelijke logica
-        List<Vector3Int> fov = new List<Vector3Int>();
-
-        // Voeg hier de logica toe om de zichtbare tegels rondom de speler te berekenen
-
-        return fov;
-    }
-
 
 
     private bool TrySetWallTile(Vector3Int pos)
@@ -222,17 +204,28 @@ public class DungeonGenerator : MonoBehaviour
             int x = Random.Range(room.X + 1, room.X + room.Width - 1);
             int y = Random.Range(room.Y + 1, room.Y + room.Height - 1);
 
-            // create different enemies
-            if (Random.value < 0.5f)
+            // Create a weighted list based on the current floor
+            List<string> weightedEnemies = new List<string>();
+
+            for (int i = 0; i < enemyNames.Count; i++)
             {
-                GameManager.Get.CreateGameObject("vampire", new Vector2(x, y));
+                // Add each enemy multiple times to the list based on its strength and current floor
+                // We add more copies of stronger enemies as the player goes deeper
+                int weight = Mathf.Max(1, currentFloor - i);
+                for (int j = 0; j < weight; j++)
+                {
+                    weightedEnemies.Add(enemyNames[i]);
+                }
             }
-            else
-            {
-                GameManager.Get.CreateGameObject("oneeye", new Vector2(x, y));
-            }
+
+            // Select a random enemy from the weighted list
+            string selectedEnemy = weightedEnemies[Random.Range(0, weightedEnemies.Count)];
+
+            // Create the selected enemy
+            GameManager.Get.CreateGameObject(selectedEnemy, new Vector2(x, y));
         }
     }
+
 
     private void PlaceItems(Room room, int maxItems)
     {
