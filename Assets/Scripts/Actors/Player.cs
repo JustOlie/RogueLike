@@ -49,7 +49,6 @@ public class Player : MonoBehaviour, Controls.IPlayerActions
                 {
                     UIManager.Get.Inventory.SelectNextItem();
                 }
-
             }
             else
             {
@@ -75,7 +74,6 @@ public class Player : MonoBehaviour, Controls.IPlayerActions
                 {
                     UIManager.Get.AddMessage("Your inventory is full.", Color.red);
                 }
-
             }
             else
             {
@@ -155,22 +153,23 @@ public class Player : MonoBehaviour, Controls.IPlayerActions
 
     private void UseItem(Consumable item)
     {
+        Actor playerActor = GetComponent<Actor>();
+
         switch (item.Type)
         {
             case Consumable.ItemType.HealthPotion:
-                GetComponent<Actor>().Heal(5);
+                playerActor.Heal(5);
                 break;
             case Consumable.ItemType.Fireball:
                 {
                     var enemies = GameManager.Get.GetNearbyEnemies(transform.position);
                     foreach (var enemy in enemies)
                     {
-                        enemy.DoDamage(8);
+                        enemy.DoDamage(8, playerActor);
                         UIManager.Get.AddMessage($"Your fireball damaged the {enemy.name} for 8HP", Color.magenta);
                     }
                     break;
                 }
-
             case Consumable.ItemType.ScrollOfConfusion:
                 {
                     var enemies = GameManager.Get.GetNearbyEnemies(transform.position);
@@ -181,7 +180,6 @@ public class Player : MonoBehaviour, Controls.IPlayerActions
                     }
                     break;
                 }
-
         }
     }
 
@@ -193,7 +191,29 @@ public class Player : MonoBehaviour, Controls.IPlayerActions
         Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -5);
     }
 
+    private void CheckForLadder()
+    {
+        Vector3 currentPosition = transform.position;
+        Ladder ladder = GameManager.Get.GetLadderAtLocation(currentPosition);
 
+        if (ladder != null)
+        {
+            if (ladder.Up)
+            {
+                MapManager.Get.MoveUp();
+            }
+            else
+            {
+                MapManager.Get.MoveDown();
+            }
+        }
+    }
 
-
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            CheckForLadder();
+        }
+    }
 }

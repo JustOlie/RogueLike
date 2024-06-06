@@ -167,6 +167,7 @@ MonoBehaviour:
   maxRooms: 30
   maxEnemies: 2
   maxItems: 2
+  currentFloor: 1
 --- !u!156049354 &408639669
 Grid:
   m_ObjectHideFlags: 0
@@ -229,6 +230,7 @@ MonoBehaviour:
   HealthBar: {fileID: 1155859142}
   Messages: {fileID: 1341884708}
   InventoryUI: {fileID: 1053440126}
+  floorInfo: {fileID: 863774130}
 --- !u!4 &515780078
 Transform:
   m_ObjectHideFlags: 0
@@ -245,6 +247,7 @@ Transform:
   - {fileID: 1053440127}
   - {fileID: 1155859144}
   - {fileID: 1341884710}
+  - {fileID: 863774128}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
@@ -339,6 +342,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &863774127
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 863774128}
+  - component: {fileID: 863774129}
+  - component: {fileID: 863774130}
+  m_Layer: 0
+  m_Name: FloorInfo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &863774128
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863774127}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 39.390186, y: 21.618507, z: -0.21554376}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 515780078}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &863774129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863774127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: 706023e5ac3a26847a829348d3ec097b, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: cd9d6161d53a7c8469bd78611523ec44, type: 3}
+  m_SortingOrder: 0
+--- !u!114 &863774130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 863774127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 525991a156980e842a75ab28f5e137c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1053440126
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,6 +860,8 @@ MonoBehaviour:
   Player: {fileID: 0}
   Enemies: []
   Items: []
+  Ladders: []
+  TombStones: []
 --- !u!4 &1684302755
 Transform:
   m_ObjectHideFlags: 0

@@ -99,10 +99,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd46e2c4391b8c64b9f375f0f2c9890b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHitPoints: 16
-  hitPoints: 16
+  FieldOfView: []
+  FieldOfViewRange: 8
+  maxHitPoints: 12
+  hitPoints: 12
   defense: 1
   power: 4
+  level: 1
+  xp: 8
+  xpToNextLevel: 100
 --- !u!114 &2112954685120019155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,6 +120,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd93348cb970a8940b7356c402399e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Target: {fileID: 0}
+  IsFighting: 0
+  confused: 0
 --- !u!114 &3709224031807631657
 MonoBehaviour:
   m_ObjectHideFlags: 0

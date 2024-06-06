@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,6 +22,8 @@ public class GameManager : MonoBehaviour
     public Actor Player;
     public List<Actor> Enemies = new List<Actor>();
     public List<Consumable> Items = new List<Consumable>();
+    public List<Ladder> Ladders = new List<Ladder>();
+    public List<TombStone> TombStones = new List<TombStone>(); // Toegevoegd
 
     public GameObject CreateGameObject(string name, Vector2 position)
     {
@@ -47,6 +48,7 @@ public class GameManager : MonoBehaviour
     public void AddEnemy(Actor enemy)
     {
         Enemies.Add(enemy);
+        UIManager.Get.SetEnemiesLeft(Enemies.Count);
     }
 
     public void RemoveEnemy(Actor enemy)
@@ -54,7 +56,25 @@ public class GameManager : MonoBehaviour
         if (Enemies.Contains(enemy))
         {
             Enemies.Remove(enemy);
+            UIManager.Get.SetEnemiesLeft(Enemies.Count);
         }
+    }
+
+    public void AddLadder(Ladder ladder)
+    {
+        Ladders.Add(ladder);
+    }
+
+    public Ladder GetLadderAtLocation(Vector3 location)
+    {
+        foreach (var ladder in Ladders)
+        {
+            if (ladder.transform.position == location)
+            {
+                return ladder;
+            }
+        }
+        return null;
     }
 
     public void StartEnemyTurn()
@@ -107,5 +127,37 @@ public class GameManager : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public void AddTombStone(TombStone stone)
+    {
+        TombStones.Add(stone);
+    }
+
+    public void ClearFloor()
+    {
+        foreach (var enemy in Enemies)
+        {
+            Destroy(enemy.gameObject);
+        }
+        Enemies.Clear();
+
+        foreach (var item in Items)
+        {
+            Destroy(item.gameObject);
+        }
+        Items.Clear();
+
+        foreach (var ladder in Ladders)
+        {
+            Destroy(ladder.gameObject);
+        }
+        Ladders.Clear();
+
+        foreach (var tombStone in TombStones)
+        {
+            Destroy(tombStone.gameObject);
+        }
+        TombStones.Clear();
     }
 }

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
@@ -10,6 +9,8 @@ public class DungeonGenerator : MonoBehaviour
     private int maxRooms;
     private int maxEnemies;
     private int maxItems;
+
+    private int currentFloor;
 
     List<Room> rooms = new List<Room>();
 
@@ -40,6 +41,11 @@ public class DungeonGenerator : MonoBehaviour
         maxItems = max;
     }
 
+    public void SetCurrentFloor(int floor)
+    {
+        currentFloor = floor;
+    }
+
     public void Generate()
     {
         rooms.Clear();
@@ -60,15 +66,12 @@ public class DungeonGenerator : MonoBehaviour
                 continue;
             }
 
-            // add tiles make the room visible on the tilemap
+            // add tiles to make the room visible on the tilemap
             for (int x = roomX; x < roomX + roomWidth; x++)
             {
                 for (int y = roomY; y < roomY + roomHeight; y++)
                 {
-                    if (x == roomX
-                        || x == roomX + roomWidth - 1
-                        || y == roomY
-                        || y == roomY + roomHeight - 1)
+                    if (x == roomX || x == roomX + roomWidth - 1 || y == roomY || y == roomY + roomHeight - 1)
                     {
                         if (!TrySetWallTile(new Vector3Int(x, y)))
                         {
@@ -79,11 +82,10 @@ public class DungeonGenerator : MonoBehaviour
                     {
                         SetFloorTile(new Vector3Int(x, y, 0));
                     }
-
                 }
             }
 
-            // create a coridor between rooms
+            // create a corridor between rooms
             if (rooms.Count != 0)
             {
                 TunnelBetween(rooms[rooms.Count - 1], room);
@@ -92,7 +94,23 @@ public class DungeonGenerator : MonoBehaviour
             PlaceItems(room, maxItems);
             rooms.Add(room);
         }
-        var player = GameManager.Get.CreateGameObject("Player", rooms[0].Center());
+
+        // Nieuwe logica voor ladders en speler
+        if (currentFloor > 0)
+        {
+            GameManager.Get.CreateGameObject("LadderUp", rooms[0].Center()).GetComponent<Ladder>().Up = true;
+        }
+
+        GameManager.Get.CreateGameObject("LadderDown", rooms[rooms.Count - 1].Center()).GetComponent<Ladder>().Up = false;
+
+        if (GameManager.Get.Player != null)
+        {
+            GameManager.Get.Player.transform.position = new Vector3(rooms[0].Center().x, rooms[0].Center().y, 0);
+        }
+        else
+        {
+            GameManager.Get.CreateGameObject("Player", rooms[0].Center());
+        }
     }
 
     private bool TrySetWallTile(Vector3Int pos)
@@ -168,7 +186,7 @@ public class DungeonGenerator : MonoBehaviour
 
         for (int counter = 0; counter < num; counter++)
         {
-            // The borders of the room are walls, so add and substract by 1
+            // The borders of the room are walls, so add and subtract by 1
             int x = Random.Range(room.X + 1, room.X + room.Width - 1);
             int y = Random.Range(room.Y + 1, room.Y + room.Height - 1);
 
@@ -191,7 +209,7 @@ public class DungeonGenerator : MonoBehaviour
 
         for (int counter = 0; counter < num; counter++)
         {
-            // The borders of the room are walls, so add and substract by 1
+            // The borders of the room are walls, so add and subtract by 1
             int x = Random.Range(room.X + 1, room.X + room.Width - 1);
             int y = Random.Range(room.Y + 1, room.Y + room.Height - 1);
 
