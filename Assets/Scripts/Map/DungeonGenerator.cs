@@ -17,7 +17,7 @@ public class DungeonGenerator : MonoBehaviour
     private List<string> enemyNames = new List<string>
     {
         "Snake", "Skeleton", "Scorpion", "Piglin", "Knight",
-        "Vampire", "Spirit", "Wizard", "Ogre", "Dragon"
+        "Vampire", "Spirit", "Wizard", "Oger", "Dragon"
     };
 
     public void SetSize(int width, int height)
@@ -105,15 +105,15 @@ public class DungeonGenerator : MonoBehaviour
         if (currentFloor == 1)
         {
             // Alleen een ladder omhoog in de laatste kamer
-            GameManager.Get.CreateGameObject("LadderUp", rooms[rooms.Count - 1].Center()).GetComponent<Ladder>().Up = true;
+            GameManager.Get.CreateGameObject("LadderDown", rooms[rooms.Count - 1].Center()).GetComponent<Ladder>().Up = true;
         }
-        else if (currentFloor > 1)
+        else if (currentFloor < 1)
         {
             // Ladder omlaag in de eerste kamer
-            GameManager.Get.CreateGameObject("LadderDown", rooms[0].Center()).GetComponent<Ladder>().Up = false;
+            GameManager.Get.CreateGameObject("LadderUp", rooms[0].Center()).GetComponent<Ladder>().Up = false;
 
             // Ladder omhoog in de laatste kamer
-            GameManager.Get.CreateGameObject("LadderUp", rooms[rooms.Count - 1].Center()).GetComponent<Ladder>().Up = true;
+            GameManager.Get.CreateGameObject("LadderDown", rooms[rooms.Count - 1].Center()).GetComponent<Ladder>().Up = true;
         }
 
         if (GameManager.Get.Player != null)
@@ -211,7 +211,7 @@ public class DungeonGenerator : MonoBehaviour
             {
                 // Add each enemy multiple times to the list based on its strength and current floor
                 // We add more copies of stronger enemies as the player goes deeper
-                int weight = Mathf.Max(1, currentFloor - i);
+                int weight = Mathf.Max(1, currentFloor - (enemyNames.Count - i - 1));
                 for (int j = 0; j < weight; j++)
                 {
                     weightedEnemies.Add(enemyNames[i]);
@@ -225,6 +225,7 @@ public class DungeonGenerator : MonoBehaviour
             GameManager.Get.CreateGameObject(selectedEnemy, new Vector2(x, y));
         }
     }
+
 
 
     private void PlaceItems(Room room, int maxItems)
