@@ -139,8 +139,15 @@ public class Actor : MonoBehaviour
                 attacker.AddXP(xp);
             }
         }
-        GameManager.Get.CreateGameObject("Dead", transform.position).name = $"Remains of {name}";
+
+        // Assuming a grid size of 1 unit per tile, adjust as needed
+        Vector3 position = transform.position;
+        position.x = Mathf.Round(position.x);
+        position.y = Mathf.Round(position.y);  // or position.z if you're using 3D
+
+        GameManager.Get.CreateGameObject("Dead", position).name = $"Remains of {name}";
         GameManager.Get.RemoveEnemy(this);
         Destroy(gameObject);
     }
+
 }
