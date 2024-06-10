@@ -3,7 +3,8 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     private static UIManager instance;
-   
+    private FloorInfo floorInfo;
+    private SaveGame saveGame;  // Referentie naar de SaveGame-component
 
     private void Awake()
     {
@@ -18,6 +19,7 @@ public class UIManager : MonoBehaviour
         }
 
         floorInfo = FindObjectOfType<FloorInfo>();
+        saveGame = FindObjectOfType<SaveGame>();  // Initialiseer de SaveGame-component
     }
 
     public static UIManager Get { get => instance; }
@@ -26,7 +28,7 @@ public class UIManager : MonoBehaviour
     public GameObject HealthBar;
     public GameObject Messages;
     [SerializeField] private GameObject InventoryUI;
-    public FloorInfo floorInfo;
+    public GameObject SaveGame;
 
     public InventoryUI Inventory { get => InventoryUI.GetComponent<InventoryUI>(); }
 
@@ -38,11 +40,13 @@ public class UIManager : MonoBehaviour
     public void UpdateLevel(int level)
     {
         HealthBar.GetComponent<HealthBar>().SetLevel(level);
+        SetLevel(level);
     }
 
     public void UpdateXP(int xp)
     {
         HealthBar.GetComponent<HealthBar>().SetXP(xp);
+        SetXP(xp);
     }
 
     public void AddMessage(string message, Color color)
@@ -53,12 +57,20 @@ public class UIManager : MonoBehaviour
     public void SetFloor(int floorNumber)
     {
         floorInfo.UpdateFloorText(floorNumber);
-        // Voeg hier eventuele andere UI-updates toe die je nodig hebt voor een nieuwe verdieping
     }
 
     public void SetEnemiesLeft(int enemiesLeft)
     {
         floorInfo.UpdateEnemiesLeftText(enemiesLeft);
-        // Voeg hier eventuele andere UI-updates toe voor het aantal vijanden dat overblijft
+    }
+
+    public void SetLevel(int level)
+    {
+        saveGame.Save(saveGame.MaxHitPoints, saveGame.HitPoints, saveGame.Defense, saveGame.Power, level, saveGame.XP, saveGame.XpToNextLevel, saveGame.CurrentFloor);
+    }
+
+    public void SetXP(int xp)
+    {
+        saveGame.Save(saveGame.MaxHitPoints, saveGame.HitPoints, saveGame.Defense, saveGame.Power, saveGame.Level, xp, saveGame.XpToNextLevel, saveGame.CurrentFloor);
     }
 }

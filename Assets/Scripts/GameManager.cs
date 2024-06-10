@@ -4,12 +4,14 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     private static GameManager instance;
+    private SaveGame saveGame;
 
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else if (instance != this)
         {
@@ -23,7 +25,27 @@ public class GameManager : MonoBehaviour
     public List<Actor> Enemies = new List<Actor>();
     public List<Consumable> Items = new List<Consumable>();
     public List<Ladder> Ladders = new List<Ladder>();
-    public List<TombStone> TombStones = new List<TombStone>(); // Toegevoegd
+    public List<TombStone> TombStones = new List<TombStone>();
+
+    private void Start()
+    {
+        saveGame = GetComponent<SaveGame>();
+        saveGame.Load();
+        UpdateUI();
+    }
+
+    private void UpdateUI()
+    {
+        UIManager.Get.SetLevel(saveGame.Level);
+        UIManager.Get.SetXP(saveGame.XP);
+        UIManager.Get.SetFloor(saveGame.CurrentFloor);
+    }
+
+    public void UpdatePlayerStats(int maxHitPoints, int hitPoints, int defense, int power, int level, int xp, int xpToNextLevel, int currentFloor)
+    {
+        saveGame.Save(maxHitPoints, hitPoints, defense, power, level, xp, xpToNextLevel, currentFloor);
+        UpdateUI();
+    }
 
     public GameObject CreateGameObject(string name, Vector2 position)
     {
